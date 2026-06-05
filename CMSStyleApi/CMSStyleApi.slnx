@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CMSStyleApi.Core/CMSStyleApi.Core.csproj" />
+  <Project Path="CMSStyleApi.Infrastructure/CMSStyleApi.Infrastructure.csproj" />
+  <Project Path="CMSStyleApi/CMSStyleApi.csproj" />
+  <Project Path="MyCMS.Application/CMSStyleApi.Application.csproj" Id="d8004be7-ef12-4bfa-9259-30b97568838d" />
+</Solution>
