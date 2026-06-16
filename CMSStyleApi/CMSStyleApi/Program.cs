@@ -16,7 +16,7 @@ namespace CMSStyleApi
             var cMSUrl = builder.Configuration["AllowedSource:CMSUrl"]
                 ?? throw new InvalidOperationException("No allowed source found in appsettings");
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = builder.Configuration.GetConnectionString("Default");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
@@ -25,7 +25,7 @@ namespace CMSStyleApi
             {
                 options.AddPolicy("MyCMS", policy =>
                 {
-                    policy.WithOrigins(cMSUrl)
+                    policy.WithOrigins("https://localhost:7174/")
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
@@ -39,11 +39,7 @@ namespace CMSStyleApi
 
 
             var app = builder.Build();
-            app.MapPost("/test-connection", ([FromBody] System.Text.Json.JsonElement data) =>
-            {
-                Console.WriteLine($"[TEST] Mottaget data: {data}");
-                return Results.Ok(new { message = "API tog emot anrop!" });
-            });
+
             app.UseHttpsRedirection();
 
             app.UseCors("MyCMS");
@@ -58,7 +54,11 @@ namespace CMSStyleApi
             app.UseAuthentication();
 
             app.MapControllers();
-
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
+            }
             app.Run();
         }
     }

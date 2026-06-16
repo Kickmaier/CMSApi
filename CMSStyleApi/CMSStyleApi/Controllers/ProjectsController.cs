@@ -6,12 +6,12 @@ using CMSStyleApi.Core.Entities;
 namespace CMSStyleApi.Controllers
 {
     [ApiController]
-    [Route("api/projects")]
-    public class ProjectController : ControllerBase
+    [Route("api/[controller]")]
+    public class ProjectsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public ProjectController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -43,6 +43,7 @@ namespace CMSStyleApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ProjectDto>> CreateProject(ProjectDto createdDto, [FromQuery] string userId)
         {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 
             var project = new Project
@@ -61,6 +62,7 @@ namespace CMSStyleApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProject(int id, ProjectDto updateDto, [FromQuery] string userId)
         {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             if (id != updateDto.Id) { return BadRequest("Id matchar inte"); }
 
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }

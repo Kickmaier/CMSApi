@@ -5,9 +5,11 @@
         public int Id { get; set; }
         public string UserId { get; set; }
         public string Title { get; set; }
-        public string Content { get; set; }
+        public string? Content { get; set; }
         public int PageTemplateId { get; set; }
-
+        public bool IsPublished { get; set; } = false;
+        public bool IsInNavMenu { get; set; } = false;
+        public int? NavOrdet { get; set; } = null;
         public PageTemplate PageTemplate { get; set; }
 
     }

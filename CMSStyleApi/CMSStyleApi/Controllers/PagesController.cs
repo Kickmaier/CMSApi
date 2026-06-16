@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CMSStyleApi.Controllers
 {
     [ApiController]
-    [Route("api/pages")]
+    [Route("api/[controller]")]
     public class PagesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -19,7 +19,7 @@ namespace CMSStyleApi.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PageDto>>> GetPages([FromQuery] string userId)
+        public async Task<ActionResult<IEnumerable<PageDto>>> GetPages([FromQuery(Name ="userId")] string userId )
         {
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
                 
@@ -32,6 +32,7 @@ namespace CMSStyleApi.Controllers
         [HttpPost]
         public async Task<ActionResult<PageDto>> CreatePage(PageDto createdDto, [FromQuery] string userId)
         {
+            if(!ModelState.IsValid) { return BadRequest(ModelState); }
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 
             var template = await _context.PageTemplates
@@ -53,7 +54,10 @@ namespace CMSStyleApi.Controllers
                 UserId = userId,
                 Title = createdDto.Title,
                 Content = createdDto.Content,
-                PageTemplateId = createdDto.PageTemplateId
+                PageTemplateId = createdDto.PageTemplateId,
+                IsPublished=createdDto.IsPublished,
+                IsInNavMenu = createdDto.IsInNavMenu,
+                NavOrdet = createdDto.NavOrdet
             };
             _context.Pages .Add(page);
             await _context.SaveChangesAsync();
@@ -84,7 +88,8 @@ namespace CMSStyleApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePage(int id, PageDto updateDto, [FromQuery] string userId)
         {
-            if(id != updateDto.Id) { return BadRequest("Id matchar inte"); }
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+            if (id != updateDto.Id) { return BadRequest("Id matchar inte"); }
 
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
             

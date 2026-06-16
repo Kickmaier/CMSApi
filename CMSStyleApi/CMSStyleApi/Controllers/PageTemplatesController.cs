@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CMSStyleApi.Controllers
 {
     [ApiController]
-    [Route("api/pagetemplates")]
+    [Route("api/[controller]")]
     public class PageTemplatesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -30,6 +30,7 @@ namespace CMSStyleApi.Controllers
         [HttpPost]
         public async Task<ActionResult<PageTemplateDto>> CreatePageTemplate(PageTemplateDto createDto, [FromQuery] string userId)
         {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 
             var projectExists = await _context.Projects
@@ -80,6 +81,7 @@ namespace CMSStyleApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePageTemplate(int id, PageTemplateDto updateDto, [FromQuery] string userId)
         {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             if (id != updateDto.Id) { return BadRequest("Id matchar inte"); }
 
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
@@ -125,6 +127,7 @@ namespace CMSStyleApi.Controllers
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 
             var template = await _context.PageTemplates
+                .Include(p => p.Project)
                 .FirstOrDefaultAsync(p => p.Id == id && p.Project.UserId == userId);
 
             if (template == null) { return NotFound("Mallen finns inte eller så saknar du behörighet."); }
