@@ -17,7 +17,7 @@ namespace CMSStyleApi.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectDto>>> GetProjects([FromQuery] string userId)
+        public async Task<ActionResult<IEnumerable<ProjectDto>>> GetAllProjects([FromQuery] string userId)
         {
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 

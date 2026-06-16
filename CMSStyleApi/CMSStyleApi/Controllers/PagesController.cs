@@ -19,7 +19,7 @@ namespace CMSStyleApi.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PageDto>>> GetPages([FromQuery(Name ="userId")] string userId )
+        public async Task<ActionResult<IEnumerable<PageDto>>> GetAllPages([FromQuery(Name ="userId")] string userId )
         {
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
                 
@@ -35,18 +35,12 @@ namespace CMSStyleApi.Controllers
             if(!ModelState.IsValid) { return BadRequest(ModelState); }
             if (string.IsNullOrEmpty(userId)) { return BadRequest("UserId saknas"); }
 
-            var template = await _context.PageTemplates
-            .Include(t => t.Project)
-            .FirstOrDefaultAsync(t => t.Id == createdDto.PageTemplateId);
+            var projectExists = await _context.Projects
+            .AnyAsync(p => p.Id == createdDto.ProjectId && p.UserId == userId);
 
-            if (template == null)
+            if (!projectExists)
             {
-                return NotFound("Du måste skapa en mall först");
-            }
-
-            if (template.Project.UserId != userId)
-            {
-                return Forbid("Du saknar behörighet till projektet");
+                return NotFound("Du måste skapa ett projekt först");
             }
 
             var page = new Page
@@ -54,7 +48,7 @@ namespace CMSStyleApi.Controllers
                 UserId = userId,
                 Title = createdDto.Title,
                 Content = createdDto.Content,
-                PageTemplateId = createdDto.PageTemplateId,
+                ProjectId = createdDto.ProjectId,
                 IsPublished=createdDto.IsPublished,
                 IsInNavMenu = createdDto.IsInNavMenu,
                 NavOrdet = createdDto.NavOrdet
@@ -97,17 +91,6 @@ namespace CMSStyleApi.Controllers
                 .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
 
             if (page == null) { return NotFound("Sidan finns inte eller behörighet saknas"); }
-
-            if (page.PageTemplateId != updateDto.PageTemplateId)
-            {
-                var template = await _context.PageTemplates
-                    .Include(t => t.Project)
-                    .FirstOrDefaultAsync(t => t.Id == updateDto.PageTemplateId);
-
-                if (template == null || template.Project.UserId != userId) { return BadRequest("Ogiltig mall eller så saknar du behörighet för den"); }
-
-                page.PageTemplateId = updateDto.PageTemplateId;
-            }
 
             page.Title = updateDto.Title;
             page.Content = updateDto.Content;
