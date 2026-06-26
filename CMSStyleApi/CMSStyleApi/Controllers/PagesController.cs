@@ -1,9 +1,7 @@
 ﻿using CMSStyleApi.Application.DTOs;
 using CMSStyleApi.Core.Entities;
 using CMSStyleApi.Infrastructure.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMSStyleApi.Controllers

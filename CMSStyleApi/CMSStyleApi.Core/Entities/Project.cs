@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CMSStyleApi.Core.Entities
+﻿namespace CMSStyleApi.Core.Entities
 {
     public class Project
     {

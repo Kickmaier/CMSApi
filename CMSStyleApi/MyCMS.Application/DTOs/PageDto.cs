@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using System.Text;
 using CMSStyleApi.Core.Entities;
 
 namespace CMSStyleApi.Application.DTOs
