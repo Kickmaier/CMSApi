@@ -47,11 +47,18 @@ namespace CMSStyleApi.Controllers
             {
                 UserId = userId,
                 Title = createdDto.Title,
-                Content = createdDto.Content,
                 ProjectId = createdDto.ProjectId,
-                IsPublished=createdDto.IsPublished,
+                Content = createdDto.Content,
+                HeaderContent = createdDto.HeaderContent,
+                MainContent = createdDto.MainContent,
+                FooterContent = createdDto.FooterContent,
+                HeaderStyleJson = createdDto.HeaderStyleJson,
+                MainStyleJson = createdDto.MainStyleJson,
+                FooterStyleJson = createdDto.FooterStyleJson,
+                NavStyleJson = createdDto.NavStyleJson,
+                IsPublished =createdDto.IsPublished,
                 IsInNavMenu = createdDto.IsInNavMenu,
-                NavOrdet = createdDto.NavOrdet
+                NavOrder = createdDto.NavOrder
             };
             _context.Pages .Add(page);
             await _context.SaveChangesAsync();
@@ -94,10 +101,21 @@ namespace CMSStyleApi.Controllers
 
             page.Title = updateDto.Title;
             page.Content = updateDto.Content;
-           
+            page.HeaderContent = updateDto.HeaderContent;
+            page.MainContent = updateDto.MainContent;
+            page.FooterContent = updateDto.FooterContent;
+            page.HeaderStyleJson = updateDto.HeaderStyleJson;
+            page.MainStyleJson = updateDto.MainStyleJson;
+            page.NavStyleJson = updateDto.NavStyleJson;
+            page.FooterStyleJson = updateDto.FooterStyleJson;
+            page.IsPublished = updateDto.IsPublished;
+            page.IsInNavMenu = updateDto.IsInNavMenu;
+            page.NavOrder = updateDto.NavOrder;
+            
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok(updateDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -110,8 +128,6 @@ namespace CMSStyleApi.Controllers
                     throw;
                 }
             }
-
-            return Ok(updateDto);
         }
 
         [HttpDelete("{id}")]

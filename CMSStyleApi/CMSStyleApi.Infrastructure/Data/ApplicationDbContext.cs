@@ -17,22 +17,13 @@ namespace CMSStyleApi.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<PageTemplate>()
-                   .HasOne(pt => pt.Project)
-                   .WithMany(p => p.PageTemplates)
-                   .HasForeignKey(pt => pt.ProjectId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
             builder.Entity<Page>()
-                   .HasOne(p => p.PageTemplate)
-                   .WithMany(pt => pt.Pages)
-                   .HasForeignKey(p => p.PageTemplateId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Page>()
-                   .HasIndex(p => p.UserId);
+                    .HasOne(p => p.Project)
+                    .WithMany(pr => pr.Pages)
+                    .HasForeignKey(p => p.ProjectId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
-            public DbSet<PageTemplate> PageTemplates { get; set; }
+            
             public DbSet<Page> Pages { get; set; }
             public DbSet<Project> Projects {  get; set; }
     }

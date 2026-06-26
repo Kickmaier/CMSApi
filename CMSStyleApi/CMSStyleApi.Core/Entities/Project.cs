@@ -12,6 +12,6 @@ namespace CMSStyleApi.Core.Entities
         public string Description { get; set; }
         public string UserId { get; set; }
 
-        public ICollection<PageTemplate> PageTemplates { get; set; } = new List<PageTemplate>();
+        public ICollection<Page> Pages { get; set; } = new List<Page>();
     }
 }
